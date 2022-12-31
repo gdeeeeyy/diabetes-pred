@@ -3,7 +3,7 @@ import matplotlib as plt
 import pandas as pd
 import math
 import copy
-data=pd.read_csv(r"C:\Users\Krishna\Downloads\diabetes2.csv")
+data=pd.read_csv(r"diabetes2.csv")
 data=data[["Glucose","Outcome"]]
 predict="Outcome"
 X_train=np.array(data.drop([predict], 1))
