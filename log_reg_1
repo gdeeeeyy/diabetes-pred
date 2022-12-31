@@ -1,0 +1,70 @@
+import numpy as np
+import matplotlib as plt
+import pandas as pd
+import math
+import copy
+data=pd.read_csv(r"C:\Users\Krishna\Downloads\diabetes2.csv")
+data=data[["Glucose","Outcome"]]
+predict="Outcome"
+X_train=np.array(data.drop([predict], 1))
+y_train=np.array(data[predict])
+def sigmoid(z):
+    g=1/(1+np.exp(-z))
+    return g
+def cost(x,y,w,b,_lambda=1):
+    m,n=x.slope
+    cost=0
+    for i in range(m):
+        z = np.dot(w,x[i]) + b
+        f_wb = sigmoid(z)
+        cost += -y[i]*np.log(f_wb) - (1-y[i])*np.log(1-f_wb)
+    total_cost = cost/m
+    return total_cost
+def compute_grad(x,y,w,b,_lambda_):
+    m,n=x.shape
+    dj_dw=np.zeros(w.shape)
+    dj_db=0
+    for i in range(m):
+        f_wb_i = sigmoid(np.dot(x[i],w) + b)          
+        err_i=f_wb_i -y[i]                       
+        for j in range(n):
+            dj_dw[j]=dj_dw[j]+err_i*x[i,j]      
+        dj_db=dj_db+err_i
+    dj_dw/=m                                   
+    dj_db/=m 
+    return dj_dw, dj_db
+def grad_desc(x,y,w_in,b_in,alpha, num_iters,lambda_):
+    m=len(x)
+    J_hist=[]#all cost function values
+    w_hist=[]
+    for i in range(num_iters):
+        dj_dw, dj_db=compute_grad(x, y, w_in, b_in,lambda_)
+        w_in=w_in-alpha*dj_dw
+        b_in=b_in-alpha*dj_db
+        if i<100000: 
+            J_hist.append(cost)
+        if i% math.ceil(num_iters/10) == 0 or i == (num_iters-1):
+            w_hist.append(w_in)
+    return w_in, b_in, J_hist, w_hist 
+def predict(x,w,b):
+    m,n=x.shape
+    p=np.zeros(m)
+    for i in range(m):
+        z_wb=np.dot(x[i], w)
+        for j in range(n):
+            z_wb+=0
+    z_wb+=b
+    f_wb=sigmoid(z_wb)
+    if f_wb>1:
+        p[i]=1
+    else:
+        p[i]=0
+    return p
+np.random.seed(1)
+initial_w = 0.01 * (np.random.rand(1).reshape(-1,1) - 0.5)
+initial_b = -8
+iterations = 10000
+alpha = 0.001
+w,b, J_history,w_history = grad_desc(X_train ,y_train, initial_w, initial_b, alpha, iterations, 0)
+p=predict(X_train,w,b)
+print("the person has diabetes" if p==1 else "the person doesn't have diabetes")
