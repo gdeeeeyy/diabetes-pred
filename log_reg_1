@@ -60,6 +60,10 @@ def predict(x,w,b):
     else:
         p[i]=0
     return p
+def making_pred(x,w,b):
+    output=(x*w)+b
+    o_wb=1/(1+np.exp(-output))
+    return o_wb
 np.random.seed(1)
 initial_w = 0.01 * (np.random.rand(1).reshape(-1,1) - 0.5)
 initial_b = -8
